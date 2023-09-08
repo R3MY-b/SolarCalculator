@@ -53,45 +53,47 @@ double wrapTo360(double angle)
     angle = fmod(angle, 360);
     if (angle < 0) angle += 360;
     return angle;  // [0, 360)
-}
+} // USED 
 
 double wrapTo180(double angle)
 {
     angle = wrapTo360(angle + 180);
     return angle - 180;  // [-180, 180)
-}
+} // USED 
 
 double calcJulianCent(JulianDay jd)
 {
     return (jd.JD - 2451545 + jd.m) / 36525;
-}
+} // USED
 
 double calcGeomMeanLongSun(double T)
 {
     return wrapTo360(280.46646 + T * 36000.76983);  // in degrees
-}
+} // USED
 
 double calcGeomMeanAnomalySun(double T)
 {
     return wrapTo360(357.52911 + T * 35999.05029);  // in degrees
-}
+} // USED
 
 double calcSunEqOfCenter(double T)
 {
     double M = calcGeomMeanAnomalySun(T);
     return sin(radians(M)) * 1.914602 + sin(2 * radians(M)) * 0.019993;  // in degrees
-}
+} // USED
 
+/*
 double calcSunRadVector(double T)
 {
     double M = calcGeomMeanAnomalySun(T);
     return 1.00014 - 0.01671 * cos(radians(M)) - 0.00014 * cos(2 * radians(M));  // in AUs
-}
+} // used in calcEquatorialCoordinates
+*/
 
 double calcMeanObliquityOfEcliptic(double T)
 {
     return 23.4392911 - T * 0.0130042;  // in degrees
-}
+} // used
 
 // Mean geocentric equatorial coordinates, accurate to ~0.01 degree
 void calcSolarCoordinates(double T, double &ra, double &dec)
@@ -103,27 +105,30 @@ void calcSolarCoordinates(double T, double &ra, double &dec)
     double eps = calcMeanObliquityOfEcliptic(T);
     ra = degrees(atan2(cos(radians(eps)) * sin(radians(L)), cos(radians(L))));  // [-180, 180)
     dec = degrees(asin(sin(radians(eps)) * sin(radians(L))));
-}
+} // USED
 
 double calcGrMeanSiderealTime(JulianDay jd)
 {
     double GMST0 = wrapTo360(100.46061837 + 0.98564736629 * (jd.JD - 2451545));
     return wrapTo360(GMST0 + 360.985647 * jd.m);  // in degrees
-}
+} // USED
 
+/*
 void equatorial2horizontal(double H, double dec, double lat, double &az, double &el)
 {
     az = degrees(atan2(sin(radians(H)), cos(radians(H)) * sin(radians(lat)) - tan(radians(dec)) * cos(radians(lat))));
     el = degrees(asin(sin(radians(lat)) * sin(radians(dec)) + cos(radians(lat)) * cos(radians(dec)) * cos(radians(H))));
-}
+} // used in calcHorizontalCoordinates
+*/
 
 // Hour angle at sunrise or sunset, returns NaN if circumpolar
 double calcHourAngleRiseSet(double dec, double lat, double h0)
 {
     return degrees(acos((sin(radians(h0)) - sin(radians(lat)) * sin(radians(dec))) /
                    (cos(radians(lat)) * cos(radians(dec)))));
-}
+} // USED
 
+/*
 // Approximate atmospheric refraction correction, in degrees
 double calcRefraction(double el)
 {
@@ -132,6 +137,7 @@ double calcRefraction(double el)
     else
         return 1.02 / tan(radians(el + 10.3 / (el + 5.11))) / 60;  // Sæmundsson (1986)
 }
+*/
 
 //======================================================================================================================
 // Solar calculator
@@ -139,6 +145,7 @@ double calcRefraction(double el)
 // All calculations assume time inputs in Coordinated Universal Time (UTC)
 //======================================================================================================================
 
+/*
 // Equation of time, in minutes of time
 void calcEquationOfTime(JulianDay jd, double &E)
 {
@@ -151,6 +158,7 @@ void calcEquationOfTime(JulianDay jd, double &E)
     E = 4 * wrapTo180(L0 - 0.00569 - ra);
 }
 
+
 // Sun's geocentric (as seen from the center of the Earth) equatorial coordinates, in degrees and AUs
 void calcEquatorialCoordinates(JulianDay jd, double &rt_ascension, double &declination, double &radius_vector)
 {
@@ -160,6 +168,7 @@ void calcEquatorialCoordinates(JulianDay jd, double &rt_ascension, double &decli
     rt_ascension = wrapTo360(rt_ascension);
     radius_vector = calcSunRadVector(T);
 }
+
 
 // Sun's topocentric (as seen from the observer's place on the Earth's surface) horizontal coordinates, in degrees
 void calcHorizontalCoordinates(JulianDay jd, double latitude, double longitude, double &azimuth, double &elevation)
@@ -176,10 +185,11 @@ void calcHorizontalCoordinates(JulianDay jd, double latitude, double longitude, 
     azimuth += 180;  // measured from the North
     elevation += calcRefraction(elevation);
 }
+*/
 
 // Find the times of sunrise, transit, and sunset, in hours
-void calcSunriseSunset(JulianDay jd, double latitude, double longitude,
-                       double &transit, double &sunrise, double &sunset, double altitude, int iterations)
+void calcSunset(JulianDay jd, double latitude, double longitude,
+                       double &sunset, double altitude, int iterations)
 {
     double m[3];
     m[0] = 0.5 - longitude / 360;
@@ -203,8 +213,7 @@ void calcSunriseSunset(JulianDay jd, double latitude, double longitude,
             if (i == 0) break;
         }
 
-    transit = m[0] * 24;
-    sunrise = m[1] * 24;
+
     sunset = m[2] * 24;
 }
 
@@ -214,6 +223,7 @@ void calcSunriseSunset(JulianDay jd, double latitude, double longitude,
 // All calculations assume time inputs in Coordinated Universal Time (UTC)
 //======================================================================================================================
 
+/*
 void calcEquationOfTime(unsigned long utc, double &E)
 {
     JulianDay jd(utc);
@@ -225,6 +235,7 @@ void calcEquationOfTime(int year, int month, int day, int hour, int minute, int 
     JulianDay jd(year, month, day, hour, minute, second);
     calcEquationOfTime(jd, E);
 }
+
 
 void calcEquatorialCoordinates(unsigned long utc, double &rt_ascension, double &declination, double &radius_vector)
 {
@@ -239,6 +250,7 @@ void calcEquatorialCoordinates(int year, int month, int day, int hour, int minut
     calcEquatorialCoordinates(jd, rt_ascension, declination, radius_vector);
 }
 
+
 void calcHorizontalCoordinates(unsigned long utc, double latitude, double longitude,
                                double &azimuth, double &elevation)
 {
@@ -252,21 +264,23 @@ void calcHorizontalCoordinates(int year, int month, int day, int hour, int minut
     JulianDay jd(year, month, day, hour, minute, second);
     calcHorizontalCoordinates(jd, latitude, longitude, azimuth, elevation);
 }
+*/
 
-void calcSunriseSunset(unsigned long utc, double latitude, double longitude,
-                       double &transit, double &sunrise, double &sunset, double altitude, int iterations)
+void calcSunset(unsigned long utc, double latitude, double longitude,
+                double &sunset, double altitude, int iterations)
 {
     JulianDay jd(utc);
-    calcSunriseSunset(jd, latitude, longitude, transit, sunrise, sunset, altitude, iterations);
+    calcSunset(jd, latitude, longitude, sunset, altitude, iterations);
 }
 
-void calcSunriseSunset(int year, int month, int day, double latitude, double longitude,
-                       double &transit, double &sunrise, double &sunset, double altitude, int iterations)
+void calcSunset(int year, int month, int day, double latitude, double longitude,
+                double &sunset, double altitude, int iterations)
 {
     JulianDay jd(year, month, day);
-    calcSunriseSunset(jd, latitude, longitude, transit, sunrise, sunset, altitude, iterations);
+    calcSunset(jd, latitude, longitude, sunset, altitude, iterations);
 }
 
+/*
 void calcCivilDawnDusk(unsigned long utc, double latitude, double longitude,
                        double &transit, double &dawn, double &dusk)
 {
@@ -302,5 +316,5 @@ void calcAstronomicalDawnDusk(int year, int month, int day, double latitude, dou
 {
     calcSunriseSunset(year, month, day, latitude, longitude, transit, dawn, dusk, ASTRONOMICAL_DAWNDUSK_STD_ALTITUDE);
 }
-
+*/
 //}  // namespace
