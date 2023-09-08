@@ -43,7 +43,7 @@ double calcJulianCent(JulianDay jd);
 double calcGeomMeanLongSun(double T);
 double calcGeomMeanAnomalySun(double T);
 double calcSunEqOfCenter(double T);
-double calcSunRadVector(double T);
+// double calcSunRadVector(double T);
 double calcMeanObliquityOfEcliptic(double T);
 void calcSolarCoordinates(double T, double &ra, double &dec);
 
@@ -51,9 +51,9 @@ void calcSolarCoordinates(double T, double &ra, double &dec);
 double calcGrMeanSiderealTime(JulianDay jd);
 
 // Sun's position in the sky
-void equatorial2horizontal(double H, double dec, double lat, double &az, double &el);
+// void equatorial2horizontal(double H, double dec, double lat, double &az, double &el);
 double calcHourAngleRiseSet(double dec, double lat, double h0);
-double calcRefraction(double el);
+// double calcRefraction(double el);
 
 //======================================================================================================================
 // Solar calculator
@@ -62,18 +62,17 @@ double calcRefraction(double el);
 //======================================================================================================================
 
 // Equation of time, in minutes of time
-void calcEquationOfTime(JulianDay jd, double &E);
+// void calcEquationOfTime(JulianDay jd, double &E);
 
 // Sun's geocentric (as seen from the center of the Earth) equatorial coordinates, in degrees and AUs
-void calcEquatorialCoordinates(JulianDay jd, double &rt_ascension, double &declination, double &radius_vector);
+// void calcEquatorialCoordinates(JulianDay jd, double &rt_ascension, double &declination, double &radius_vector);
 
 // Sun's topocentric (as seen from the observer's place on the Earth's surface) horizontal coordinates, in degrees
-void calcHorizontalCoordinates(JulianDay jd, double latitude, double longitude, double &azimuth, double &elevation);
+// void calcHorizontalCoordinates(JulianDay jd, double latitude, double longitude, double &azimuth, double &elevation);
 
-// Find the times of sunrise, transit, and sunset, in hours
-void calcSunriseSunset(JulianDay jd, double latitude, double longitude,
-                       double &transit, double &sunrise, double &sunset,
-                       double altitude = SUNRISESET_STD_ALTITUDE, int iterations = 1);
+// Find the time of sunset in hours
+void calcSunset(JulianDay jd, double latitude, double longitude,
+                       double &sunset, double altitude = SUNRISESET_STD_ALTITUDE, int iterations = 1);
 
 //======================================================================================================================
 // Wrapper functions
@@ -81,25 +80,23 @@ void calcSunriseSunset(JulianDay jd, double latitude, double longitude,
 // All calculations assume time inputs in Coordinated Universal Time (UTC)
 //======================================================================================================================
 
-void calcEquationOfTime(unsigned long utc, double &E);
-void calcEquationOfTime(int year, int month, int day, int hour, int minute, int second, double &E);
+// void calcEquationOfTime(unsigned long utc, double &E);
+// void calcEquationOfTime(int year, int month, int day, int hour, int minute, int second, double &E);
 
-void calcEquatorialCoordinates(unsigned long utc, double &rt_ascension, double &declination, double &radius_vector);
-void calcEquatorialCoordinates(int year, int month, int day, int hour, int minute, int second,
-                               double &rt_ascension, double &declination, double &radius_vector);
+// void calcEquatorialCoordinates(unsigned long utc, double &rt_ascension, double &declination, double &radius_vector);
+// void calcEquatorialCoordinates(int year, int month, int day, int hour, int minute, int second,
+//                               double &rt_ascension, double &declination, double &radius_vector);
 
-void calcHorizontalCoordinates(unsigned long utc, double latitude, double longitude,
-                               double &azimuth, double &elevation);
-void calcHorizontalCoordinates(int year, int month, int day, int hour, int minute, int second,
-                               double latitude, double longitude, double &azimuth, double &elevation);
+// void calcHorizontalCoordinates(unsigned long utc, double latitude, double longitude,
+//                               double &azimuth, double &elevation);
+// void calcHorizontalCoordinates(int year, int month, int day, int hour, int minute, int second,
+//                               double latitude, double longitude, double &azimuth, double &elevation);
 
-void calcSunriseSunset(unsigned long utc, double latitude, double longitude,
-                       double &transit, double &sunrise, double &sunset,
+void calcSunset(unsigned long utc, double latitude, double longitude, double &sunset,
                        double altitude = SUNRISESET_STD_ALTITUDE, int iterations = 1);
-void calcSunriseSunset(int year, int month, int day, double latitude, double longitude,
-                       double &transit, double &sunrise, double &sunset,
+void calcSunset(int year, int month, int day, double latitude, double longitude, double &sunset,
                        double altitude = SUNRISESET_STD_ALTITUDE, int iterations = 1);
-
+/*
 void calcCivilDawnDusk(unsigned long utc, double latitude, double longitude,
                        double &transit, double &dawn, double &dusk);
 void calcCivilDawnDusk(int year, int month, int day, double latitude, double longitude,
@@ -114,6 +111,6 @@ void calcAstronomicalDawnDusk(unsigned long utc, double latitude, double longitu
                               double &transit, double &dawn, double &dusk);
 void calcAstronomicalDawnDusk(int year, int month, int day, double latitude, double longitude,
                               double &transit, double &dawn, double &dusk);
-
+*/
 //}  // namespace
 #endif  //SOLARCALCULATOR_H
